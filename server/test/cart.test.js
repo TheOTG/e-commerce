@@ -9,7 +9,7 @@ let cartId = null;
 
 let productId = '5c8f38e7f0ece549dd1bd83d';
 
-let token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjVjOGY3YzQ3MTExNzA5N2E5M2ViMTVlNCIsImlhdCI6MTU1MjkwNzc5M30.qZUBYkrMdWua_1zMNgcD20i-eTytajFIhW3wy-ynhnw'
+let token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjVjOGY3YzQ3MTExNzA5N2E5M2ViMTVlNCIsImlhdCI6MTU1MjkwNzc5M30.qZUBYkrMdWua_1zMNgcD20i-eTytajFIhW3wy-ynhnw';
 
 let owner = '5c8f7c471117097a93eb15e4';
 
