@@ -38,6 +38,26 @@ describe('/POST cart', function() {
                 });
         });
     });
+    describe('fail because no token', function() {
+        it('should return an error and status 401', function(done) {
+            chai
+                .request(app)
+                .post('/cart')
+                .send({
+                    products: [productId],
+                    owner
+                })
+                .then(response => {
+                    response.should.have.status(401);
+                    response.body.should.have.property('message');
+                    response.body.message.should.equal('Unauthorized');
+                    done();
+                })
+                .catch(err => {
+                    console.log(err);
+                });
+        });
+    });
 });
 
 describe('/PUT cart/:id/addProduct', function() {
@@ -63,6 +83,45 @@ describe('/PUT cart/:id/addProduct', function() {
                     console.log(err);
                 })
         });
+        describe('fail because no token', function() {
+            it('should return an error and status 401', function(done) {
+                chai
+                    .request(app)
+                    .put(`/cart/${cartId}/addProduct`)
+                    .send({
+                        products: [productId]
+                    })
+                    .then(response => {
+                        response.should.have.status(401);
+                        response.body.should.have.property('message');
+                        response.body.message.should.equal('Unauthorized');
+                        done();
+                    })
+                    .catch(err => {
+                        console.log(err);
+                    });
+            });
+        });
+        describe('fail because different user', function() {
+            it('should return an error and status 401', function(done) {
+                chai
+                    .request(app)
+                    .put(`/cart/${cartId}/addProduct`)
+                    .set('access_token', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjVjOGY3YzQ3MTExNzA5N2E5M2ViMTVlNSIsImlhdCI6MTU1MjkwNzc5M30.cRD95eChAnMU7v7uTuZ0SUMIAWmbA3C26w_-K062EE4')
+                    .send({
+                        products: [productId]
+                    })
+                    .then(response => {
+                        response.should.have.status(403);
+                        response.body.should.have.property('message');
+                        response.body.message.should.equal('Forbidden');
+                        done();
+                    })
+                    .catch(err => {
+                        console.log(err);
+                    });
+            });
+        });
     });
 });
 
@@ -85,10 +144,50 @@ describe('/PUT cart/:id/subtractProduct', function() {
                 })
                 .catch(err => {
                     console.log(err);
+                });
+        });
+    });
+    describe('fail because no token', function() {
+        it('should return an error and status 401', function(done) {
+            chai
+                .request(app)
+                .put(`/cart/${cartId}/subtractProduct`)
+                .send({
+                    products: productId,
                 })
-        })
-    })
-})
+                .then(response => {
+                    response.should.have.status(401);
+                    response.body.should.have.property('message');
+                    response.body.message.should.equal('Unauthorized');
+                    done();
+                })
+                .catch(err => {
+                    console.log(err);
+                });
+        });
+    });
+    describe('fail because different user', function() {
+        it('should return an error and status 401', function(done) {
+            chai
+                .request(app)
+                .put(`/cart/${cartId}/addProduct`)
+                .set('access_token', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjVjOGY3YzQ3MTExNzA5N2E5M2ViMTVlNSIsImlhdCI6MTU1MjkwNzc5M30.cRD95eChAnMU7v7uTuZ0SUMIAWmbA3C26w_-K062EE4')
+                .send({
+                    products: productId,
+                    owner
+                })
+                .then(response => {
+                    response.should.have.status(403);
+                    response.body.should.have.property('message');
+                    response.body.message.should.equal('Forbidden');
+                    done();
+                })
+                .catch(err => {
+                    console.log(err);
+                });
+        });
+    });
+});
 
 describe('/DELETE cart/:id/deleteProduct', function() {
     describe('success', function() {
@@ -111,9 +210,88 @@ describe('/DELETE cart/:id/deleteProduct', function() {
                 });
         });
     });
+    describe('fail because no token', function() {
+        it('should return an error and status 401', function(done) {
+            chai
+                .request(app)
+                .delete(`/cart/${cartId}/deleteProduct`)
+                .send({
+                    product: productId
+                })
+                .then(response => {
+                    response.should.have.status(401);
+                    response.body.should.have.property('message');
+                    response.body.message.should.equal('Unauthorized');
+                    done();
+                })
+                .catch(err => {
+                    console.log(err);
+                });
+        });
+    });
+    describe('fail because different user', function() {
+        it('should return an error and status 403', function(done) {
+            chai
+                .request(app)
+                .delete(`/cart/${cartId}/deleteProduct`)
+                .set('access_token', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjVjOGY3YzQ3MTExNzA5N2E5M2ViMTVlNSIsImlhdCI6MTU1MjkwNzc5M30.cRD95eChAnMU7v7uTuZ0SUMIAWmbA3C26w_-K062EE4')
+                .send({
+                    product: productId
+                })
+                .then(response => {
+                    response.should.have.status(403);
+                    response.body.should.have.property('message');
+                    response.body.message.should.equal('Forbidden');
+                    done();
+                })
+                .catch(err => {
+                    console.log(err);
+                });
+        });
+    });
 });
 
 describe('/DELETE cart/:id', function() {
+    describe('fail because no token', function() {
+        it('should return an error and status 401', function(done) {
+            chai
+                .request(app)
+                .delete(`/cart/${cartId}`)
+                .send({
+                    products: productId,
+                })
+                .then(response => {
+                    response.should.have.status(401);
+                    response.body.should.have.property('message');
+                    response.body.message.should.equal('Unauthorized');
+                    done();
+                })
+                .catch(err => {
+                    console.log(err);
+                });
+        });
+    });
+    describe('fail because different user', function() {
+        it('should return an error and status 401', function(done) {
+            chai
+                .request(app)
+                .delete(`/cart/${cartId}`)
+                .set('access_token', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjVjOGY3YzQ3MTExNzA5N2E5M2ViMTVlNSIsImlhdCI6MTU1MjkwNzc5M30.cRD95eChAnMU7v7uTuZ0SUMIAWmbA3C26w_-K062EE4')
+                .send({
+                    products: productId,
+                    owner
+                })
+                .then(response => {
+                    response.should.have.status(403);
+                    response.body.should.have.property('message');
+                    response.body.message.should.equal('Forbidden');
+                    done();
+                })
+                .catch(err => {
+                    console.log(err);
+                });
+        });
+    });
     describe('success', function() {
         it('should delete a cart and return a message and status 200', function(done) {
             chai

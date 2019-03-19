@@ -6,6 +6,8 @@ module.exports = function(req, res, next) {
             _id: req.params.id
         })
         .then(cart => {
+            console.log(cart.owner)
+            console.log(req.user.toString())
             if(cart.owner.toString() === req.user.toString()) {
                 next()
             } else {
@@ -13,7 +15,7 @@ module.exports = function(req, res, next) {
             }
         })
         .catch(err => {
-            res.status(400).json({
+            res.status(403).json({
                 message: err.message
             })
         })

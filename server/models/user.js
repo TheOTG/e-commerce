@@ -5,6 +5,7 @@ const bcrypt = require('../helpers/bcrypt');
 let userSchema = new Schema({
     email: {
         type: String,
+        required: [true, 'Email is required'],
         validate: [
             {
                 validator: function(value) {
@@ -35,6 +36,7 @@ let userSchema = new Schema({
     },
     password: {
         type: String,
+        required: [true, 'Password is required'],
         validate: [
             {
                 validator: function(value) {
