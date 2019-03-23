@@ -39,29 +39,21 @@ class ProductController {
     }
 
     static update(req, res) {
-        console.log(req.body.name === '')
-        console.log(req.body.name !== '')
-        if(typeof req.body.name === 'string' && typeof req.body.price === 'number' &&
-            req.body.name !== '' && req.body.price > -1) {
-                Product
-                .findOneAndUpdate({
-                    _id: req.params.id
-                }, {
-                    ...req.body
-                }, {
-                    new: true
-                })
-                .then(product => {
-                    res.status(200).json(product)
-                })
-                .catch(err => {
-                    res.status(500).json(err);
-                });
-        } else {
-            res.status(400).json({
-                message: 'Invalid input'
+        Product
+            .findByIdAndUpdate({
+                _id: req.params.id
+            }, {
+                ...req.body
+            }, {
+                new: true,
+                runValidators: true
+            })
+            .then(product => {
+                res.status(200).json(product);
+            })
+            .catch(err => {
+                res.status(500).json(err);
             });
-        }
     }
 
     static delete(req, res) {

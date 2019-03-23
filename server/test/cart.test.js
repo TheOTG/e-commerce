@@ -21,13 +21,19 @@ describe('/POST cart', function() {
                 .post('/cart')
                 .set('access_token', token)
                 .send({
-                    products: [productId],
+                    products: [{
+                        quantity: 1,
+                        productId
+                    }],
                     owner
                 })
                 .then(response => {
                     response.should.have.status(201);
                     response.body.should.have.property('products');
-                    response.body.products[0].toString().should.equal(productId);
+                    response.body.products[0].should.have.property('quantity');
+                    response.body.products[0].quantity.should.equal(1);
+                    response.body.products[0].should.have.property('productId');
+                    response.body.products[0].productId.toString().should.equal(productId);
                     response.body.should.have.property('owner');
                     response.body.owner.toString().should.equal(owner);
                     cartId = response.body._id;
@@ -44,7 +50,10 @@ describe('/POST cart', function() {
                 .request(app)
                 .post('/cart')
                 .send({
-                    products: [productId],
+                    products: [{
+                        quantity: 1,
+                        productId
+                    }],
                     owner
                 })
                 .then(response => {
@@ -60,12 +69,12 @@ describe('/POST cart', function() {
     });
 });
 
-describe('/PUT cart/:id/addProduct', function() {
+describe('/PUT cart/:id/addQuantity', function() {
     describe('success', function() {
         it('should add a product to the cart and return the updated cart and status 200', function(done) {
             chai
                 .request(app)
-                .put(`/cart/${cartId}/addProduct`)
+                .put(`/cart/${cartId}/addQuantity`)
                 .set('access_token', token)
                 .send({
                     product: productId
@@ -73,10 +82,7 @@ describe('/PUT cart/:id/addProduct', function() {
                 .then(response => {
                     response.should.have.status(200);
                     response.body.should.have.property('products');
-                    response.body.products.forEach(product => {
-                        product.toString().should.equal(productId);
-                    });
-                    response.body.products.length.should.equal(2);
+                    response.body.products[0].quantity.should.equal(2);
                     done();
                 })
                 .catch(err => {
@@ -87,9 +93,9 @@ describe('/PUT cart/:id/addProduct', function() {
             it('should return an error and status 401', function(done) {
                 chai
                     .request(app)
-                    .put(`/cart/${cartId}/addProduct`)
+                    .put(`/cart/${cartId}/addQuantity`)
                     .send({
-                        products: [productId]
+                        product: productId
                     })
                     .then(response => {
                         response.should.have.status(401);
@@ -106,10 +112,10 @@ describe('/PUT cart/:id/addProduct', function() {
             it('should return an error and status 401', function(done) {
                 chai
                     .request(app)
-                    .put(`/cart/${cartId}/addProduct`)
+                    .put(`/cart/${cartId}/addQuantity`)
                     .set('access_token', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjVjOGY3YzQ3MTExNzA5N2E5M2ViMTVlNSIsImlhdCI6MTU1MjkwNzc5M30.cRD95eChAnMU7v7uTuZ0SUMIAWmbA3C26w_-K062EE4')
                     .send({
-                        products: [productId]
+                        product: productId
                     })
                     .then(response => {
                         response.should.have.status(403);
@@ -125,12 +131,12 @@ describe('/PUT cart/:id/addProduct', function() {
     });
 });
 
-describe('/PUT cart/:id/subtractProduct', function() {
+describe('/PUT cart/:id/subtractQuantity', function() {
     describe('success', function() {
         it('should subtract a product from a cart and return the updated cart and status 200', function(done) {
             chai
                 .request(app)
-                .put(`/cart/${cartId}/subtractProduct`)
+                .put(`/cart/${cartId}/subtractQuantity`)
                 .set('access_token', token)
                 .send({
                     product: productId
@@ -138,8 +144,7 @@ describe('/PUT cart/:id/subtractProduct', function() {
                 .then(response => {
                     response.should.have.status(200);
                     response.body.should.have.property('products');
-                    response.body.products[0].toString().should.equal(productId);
-                    response.body.products.length.should.equal(1);
+                    response.body.products[0].quantity.should.equal(1);
                     done();
                 })
                 .catch(err => {
@@ -151,7 +156,7 @@ describe('/PUT cart/:id/subtractProduct', function() {
         it('should return an error and status 401', function(done) {
             chai
                 .request(app)
-                .put(`/cart/${cartId}/subtractProduct`)
+                .put(`/cart/${cartId}/subtractQuantity`)
                 .send({
                     products: productId,
                 })
@@ -170,7 +175,7 @@ describe('/PUT cart/:id/subtractProduct', function() {
         it('should return an error and status 401', function(done) {
             chai
                 .request(app)
-                .put(`/cart/${cartId}/addProduct`)
+                .put(`/cart/${cartId}/addQuantity`)
                 .set('access_token', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjVjOGY3YzQ3MTExNzA5N2E5M2ViMTVlNSIsImlhdCI6MTU1MjkwNzc5M30.cRD95eChAnMU7v7uTuZ0SUMIAWmbA3C26w_-K062EE4')
                 .send({
                     products: productId,
@@ -189,6 +194,69 @@ describe('/PUT cart/:id/subtractProduct', function() {
     });
 });
 
+describe('/PUT cart/:id/addProduct', function() {
+    describe('success', function() {
+        it('should add a product to the cart and return the updated cart and status 200', function(done) {
+            chai
+                .request(app)
+                .put(`/cart/${cartId}/addProduct`)
+                .set('access_token', token)
+                .send({
+                    product: '5c8f38e7f0ece549dd1bd83e'
+                })
+                .then(response => {
+                    console.log(response.body)
+                    response.should.have.status(200);
+                    response.body.should.have.property('products');
+                    response.body.products.length.should.equal(2);
+                    done();
+                })
+                .catch(err => {
+                    console.log(err);
+                })
+        });
+        describe('fail because no token', function() {
+            it('should return an error and status 401', function(done) {
+                chai
+                    .request(app)
+                    .put(`/cart/${cartId}/addQuantity`)
+                    .send({
+                        product: productId
+                    })
+                    .then(response => {
+                        response.should.have.status(401);
+                        response.body.should.have.property('message');
+                        response.body.message.should.equal('Unauthorized');
+                        done();
+                    })
+                    .catch(err => {
+                        console.log(err);
+                    });
+            });
+        });
+        describe('fail because different user', function() {
+            it('should return an error and status 401', function(done) {
+                chai
+                    .request(app)
+                    .put(`/cart/${cartId}/addQuantity`)
+                    .set('access_token', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjVjOGY3YzQ3MTExNzA5N2E5M2ViMTVlNSIsImlhdCI6MTU1MjkwNzc5M30.cRD95eChAnMU7v7uTuZ0SUMIAWmbA3C26w_-K062EE4')
+                    .send({
+                        product: productId
+                    })
+                    .then(response => {
+                        response.should.have.status(403);
+                        response.body.should.have.property('message');
+                        response.body.message.should.equal('Forbidden');
+                        done();
+                    })
+                    .catch(err => {
+                        console.log(err);
+                    });
+            });
+        });
+    });
+});
+
 describe('/DELETE cart/:id/deleteProduct', function() {
     describe('success', function() {
         it('should delete a product from a cart and return the updated cart and status 200', function(done) {
@@ -202,7 +270,7 @@ describe('/DELETE cart/:id/deleteProduct', function() {
                 .then(response => {
                     response.should.have.status(200);
                     response.body.should.have.property('products');
-                    response.body.products.should.not.include(productId);
+                    response.body.products.length.should.equal(1);
                     done();
                 })
                 .catch(err => {
@@ -257,9 +325,6 @@ describe('/DELETE cart/:id', function() {
             chai
                 .request(app)
                 .delete(`/cart/${cartId}`)
-                .send({
-                    products: productId,
-                })
                 .then(response => {
                     response.should.have.status(401);
                     response.body.should.have.property('message');
@@ -277,10 +342,6 @@ describe('/DELETE cart/:id', function() {
                 .request(app)
                 .delete(`/cart/${cartId}`)
                 .set('access_token', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjVjOGY3YzQ3MTExNzA5N2E5M2ViMTVlNSIsImlhdCI6MTU1MjkwNzc5M30.cRD95eChAnMU7v7uTuZ0SUMIAWmbA3C26w_-K062EE4')
-                .send({
-                    products: productId,
-                    owner
-                })
                 .then(response => {
                     response.should.have.status(403);
                     response.body.should.have.property('message');

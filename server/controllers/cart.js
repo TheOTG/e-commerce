@@ -35,25 +35,68 @@ class CartController {
                 _id: req.params.id
             }, {
                 $push: {
-                    products: req.body.product
+                    products: {
+                        productId: req.body.product,
+                        quantity: 1
+                    }
                 }
             }, {
                 upsert: true,
                 new: true
             })
             .then(result => {
-                res.status(200).json(result)
+                res.status(200).json(result);
             })
             .catch(err => {
                 res.status(500).json(err);
             });
     }
 
-    static subtractProduct(req, res) {
+    static addQuantity(req, res) {
         Cart
             .findOneAndUpdate({
                 _id: req.params.id,
-                products: req.body.product
+                'products.productId': req.body.product
+            }, {
+                $inc: {
+                    'products.$.quantity': 1
+                }
+            }, {
+                new: true
+            })
+            .then(result => {
+                res.status(200).json(result);
+            })
+            .catch(err => {
+                res.status(500).json(err);
+            });
+    }
+
+    static subtractQuantity(req, res) {
+        Cart
+            .findOneAndUpdate({
+                _id: req.params.id,
+                'products.productId': req.body.product
+            }, {
+                $inc: {
+                    'products.$.quantity': -1
+                }
+            }, {
+                new: true
+            })
+            .then(result => {
+                res.status(200).json(result);
+            })
+            .catch(err => {
+                res.status(500).json(err);
+            });
+    }
+
+    static removeProduct(req, res) {
+        Cart
+            .findOneAndUpdate({
+                _id: req.params.id,
+                'products.productId': req.body.product
             }, {
                 $unset: {
                     'products.$': null
@@ -78,25 +121,6 @@ class CartController {
             })
             .catch(err => {
                 console.log(err.message)
-                res.status(500).json(err);
-            });
-    }
-
-    static removeProduct(req, res) {
-        Cart
-            .findOneAndUpdate({
-                _id: req.params.id
-            }, {
-                $pull: {
-                    products: req.body.product
-                }
-            }, {
-                new: true
-            })
-            .then(result => {
-                res.status(200).json(result)
-            })
-            .catch(err => {
                 res.status(500).json(err);
             });
     }

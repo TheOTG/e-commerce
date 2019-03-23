@@ -12,7 +12,9 @@ router.delete('/:id', authorize, Cart.delete);
 
 router.put('/:id/addProduct', authorize, Cart.addProduct);
 
-router.put('/:id/subtractProduct', authorize, Cart.subtractProduct);
+router.put('/:id/addQuantity', authorize, Cart.addQuantity);
+
+router.put('/:id/subtractQuantity', authorize, Cart.subtractQuantity);
 
 router.delete('/:id/deleteProduct', authorize, Cart.removeProduct);
 
