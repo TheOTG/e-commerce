@@ -1,6 +1,5 @@
 import Vue from 'vue';
 import Router from 'vue-router';
-import Home from './views/Home.vue';
 
 Vue.use(Router);
 
@@ -9,17 +8,80 @@ export default new Router({
   base: process.env.BASE_URL,
   routes: [
     {
-      path: '/',
-      name: 'home',
-      component: Home,
+      path: '*',
+      name: 'not-found',
+      component: () => import(/* webpackChunkName: "productlist" */ './views/ProductList.vue'),
+      props: true,
     },
     {
-      path: '/about',
-      name: 'about',
-      // route level code-splitting
-      // this generates a separate chunk (about.[hash].js) for this route
-      // which is lazy-loaded when the route is visited.
-      component: () => import(/* webpackChunkName: "about" */ './views/About.vue'),
+      path: '/product',
+      name: 'product-list',
+      component: () => import(/* webpackChunkName: "productlist" */ './views/ProductList.vue'),
+      props: true,
+      children: [
+        {
+          path: ':id',
+          name: 'product-detail',
+          component: () => import(/* webpackChunkName: "productdetail" */ './views/ProductDetail.vue'),
+          props: true,
+        },
+        {
+          path: '*',
+          name: 'product-not-found',
+          component: () => import(/* webpackChunkName: "productlist" */ './views/ProductList.vue'),
+          props: true,
+        },
+      ]
+    },
+    {
+      path: '/myproducts',
+      name: 'my-products',
+      component: () => import(/* webpackChunkName: "myproducts" */ './views/MyProducts.vue'),
+      props: true,
+      children: [
+        {
+          path: ':id',
+          name: 'my-product-detail',
+          component: () => import(/* webpackChunkName: "productdetail" */ './views/ProductDetail.vue'),
+          props: true,
+        },
+        {
+          path: 'edit/:id',
+          name: 'product-edit',
+          component: () => import(/* webpackChunkName: "productedit" */ './views/ProductEdit.vue'),
+          props: true,
+        },
+        {
+          path: '*',
+          name: 'my-product-not-found',
+          component: () => import(/* webpackChunkName: "productlist" */ './views/MyProducts.vue'),
+          props: true,
+        },
+      ],
+    },
+    {
+      path: '/sell',
+      name: 'sell',
+      component: () => import(/* webpackChunkName: "sell" */ './views/Sell.vue'),
+      props: true,
+    },
+    {
+      path: '/register',
+      name: 'register',
+      component: () => import(/* webpackChunkName: "register" */ './views/Register.vue'),
+      props: true,
+    },
+    {
+      path: '/login',
+      name: 'login',
+      component: () => import(/* webpackChunkName: "login" */ './views/Login.vue'),
+      props: true,
+    },
+    {
+      path: '/cart',
+      name: 'cart',
+      component: () => import(/* webpackChunkName: "cart" */ './views/Cart.vue'),
+      props: true,
     },
   ],
 });
