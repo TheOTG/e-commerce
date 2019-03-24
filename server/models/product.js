@@ -16,6 +16,11 @@ let productSchema = new Schema({
       type: Number,
       required: [true, 'Stock is required'],
       min: [1, 'Invalid input']
+    },
+    description: String,
+    seller: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Users'
     }
 })
 

@@ -8,6 +8,10 @@ chai.use(chaihttp);
 
 let productId = null;
 
+let token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjVjOGY3YzQ3MTExNzA5N2E5M2ViMTVlNCIsImlhdCI6MTU1MjkwNzc5M30.qZUBYkrMdWua_1zMNgcD20i-eTytajFIhW3wy-ynhnw';
+
+let seller = '5c8f7c471117097a93eb15e4';
+
 describe('/POST products', function() {
     before('create product', function() {
         db.dropCollection('product');
@@ -17,11 +21,13 @@ describe('/POST products', function() {
             chai
                 .request(app)
                 .post('/products')
+                .set('access_token', token)
                 .send({
                     name: 'Samsung S9',
                     price: 8000000,
                     image: 'image link to google cloud storage',
-                    stock: 10
+                    stock: 10,
+                    seller,
                 })
                 .then(response => {
                     response.should.have.status(201);
@@ -34,6 +40,8 @@ describe('/POST products', function() {
                     response.body.image.should.equal('image link to google cloud storage');
                     response.body.should.have.property('stock');
                     response.body.stock.should.equal(10);
+                    response.body.should.have.property('seller');
+                    response.body.seller.toString().should.equal(seller);
                     productId = response.body._id
                     done();
                 })
@@ -47,10 +55,11 @@ describe('/POST products', function() {
             chai
                 .request(app)
                 .post('/products')
+                .set('access_token', token)
                 .send({
                     name: '',
                     price: '',
-                    stock: ''
+                    stock: '',
                 })
                 .then(response => {
                     response.should.have.status(500);
@@ -71,6 +80,7 @@ describe('/POST products', function() {
             chai
                 .request(app)
                 .post('/products')
+                .set('access_token', token)
                 .send({
                     name: '',
                     price: -1,
@@ -103,6 +113,29 @@ describe('/GET products', function() {
                 .then(response => {
                     response.should.have.status(200);
                     response.body.should.be.an('array');
+                    response.body.length.should.equal(1);
+                    done();
+                })
+                .catch(err => {
+                    console.log(err);
+                });
+        });
+    });
+});
+
+describe('/GET products/myList', function() {
+    describe('success', function() {
+        it('should return an array of products that belongs to the seller and status 200', function(done) {
+            chai
+                .request(app)
+                .get('/products/myList')
+                .set('access_token', token)
+                .then(response => {
+                    response.should.have.status(200);
+                    response.body.should.be.an('array');
+                    response.body[0].should.have.property('seller');
+                    // don't forget to comment product populate('seller') in product controller when testing
+                    response.body[0].seller.toString().should.equal(seller);
                     done();
                 })
                 .catch(err => {
@@ -138,6 +171,7 @@ describe('/PUT products/:id', function() {
             chai
                 .request(app)
                 .put(`/products/${productId}`)
+                .set('access_token', token)
                 .send({
                     name: 'Vivo 1714',
                     price: 4000000,
@@ -166,6 +200,7 @@ describe('/PUT products/:id', function() {
             chai
                 .request(app)
                 .put(`/products/${productId}`)
+                .set('access_token', token)
                 .send({
                     name: '',
                     price: -100,
@@ -195,6 +230,7 @@ describe('/DELETE products/:id', function() {
             chai
                 .request(app)
                 .delete(`/products/${productId}`)
+                .set('access_token', token)
                 .then(response => {
                     response.should.have.status(200);
                     response.body.should.have.property('message');

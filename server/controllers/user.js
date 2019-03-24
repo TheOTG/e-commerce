@@ -24,7 +24,10 @@ class UserController {
             if(user && bcrypt.compare(password, user.password)) {
                 const payload = { id: user._id };
                 const access_token = jwt.sign(payload);
-                res.status(200).json(access_token);
+                res.status(200).json({
+                    access_token,
+                    name: user.name
+                });
             } else {
                 res.status(400).json({
                     message: 'Wrong username/password'

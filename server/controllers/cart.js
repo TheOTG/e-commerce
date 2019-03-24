@@ -4,7 +4,8 @@ class CartController {
     static create(req, res) {
         Cart
             .create({
-                ...req.body
+                ...req.body,
+                owner: req.user
             })
             .then(cart => {
                 res.status(201).json(cart);

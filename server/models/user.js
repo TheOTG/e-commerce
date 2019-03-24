@@ -37,15 +37,12 @@ let userSchema = new Schema({
     password: {
         type: String,
         required: [true, 'Password is required'],
-        validate: [
-            {
-                validator: function(value) {
-                    return value.length >= 6;
-                },
-                message: 'Password minimum length must be 6'
-            }
-        ]
-    }
+        minlength: [6, 'Password minimum length must be 6']
+    },
+    name: {
+        type: String,
+        required: [true, 'Name is required'],
+    },
 });
 
 userSchema.post('validate', function(doc) {

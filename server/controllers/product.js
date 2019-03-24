@@ -4,6 +4,7 @@ class ProductController {
     static list(req, res) {
         Product
             .find({})
+            .populate('seller')
             .then(products => {
                 res.status(200).json(products);
             })
@@ -13,9 +14,15 @@ class ProductController {
     }
 
     static create(req, res) {
+        let imageUrl = null
+        if(req.file) {
+            imageUrl = req.file.cloudStoragePublicUrl
+            req.body.image = imageUrl
+        }
         Product
             .create({
-                ...req.body
+                ...req.body,
+                seller: req.user,
             })
             .then(product => {
                 res.status(201).json(product);
@@ -25,11 +32,26 @@ class ProductController {
             });
     }
 
+    static myProducts(req, res) {
+        Product
+            .find({
+                seller: req.user
+            })
+            .populate('seller')
+            .then(products => {
+                res.status(200).json(products);
+            })
+            .catch(err => {
+                res.status(500).json(err);
+            })
+    }
+
     static findOne(req, res) {
         Product
             .findOne({
                 _id: req.params.id
             })
+            .populate('seller')
             .then(product => {
                 res.status(200).json(product);
             })
@@ -39,6 +61,11 @@ class ProductController {
     }
 
     static update(req, res) {
+        let imageUrl = null
+        if(req.file) {
+            imageUrl = req.file.cloudStoragePublicUrl
+            req.body.image = imageUrl
+        }
         Product
             .findByIdAndUpdate({
                 _id: req.params.id

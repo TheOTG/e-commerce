@@ -17,7 +17,8 @@ describe('/POST user/register', function() {
                 .post('/user/register')
                 .send({
                     email: 'ken@mail.com',
-                    password: '123456'
+                    password: '123456',
+                    name: 'kenny'
                 })
                 .then(response => {
                     response.should.have.status(201);
@@ -26,6 +27,8 @@ describe('/POST user/register', function() {
                     response.body.email.should.equal('ken@mail.com');
                     response.body.should.have.property('password');
                     response.body.password.should.not.equal('123456');
+                    response.body.should.have.property('name');
+                    response.body.name.should.equal('kenny');
                     done();
                 })
                 .catch(err => {
@@ -40,7 +43,8 @@ describe('/POST user/register', function() {
                 .post('/user/register')
                 .send({
                     email: 'ken@mail.com',
-                    password: '1'
+                    password: '12345',
+                    name: ''
                 })
                 .then(response => {
                     response.should.have.status(500);
@@ -48,7 +52,9 @@ describe('/POST user/register', function() {
                     response.body.errors.should.have.property('email');
                     response.body.errors.email.message.should.equal('Email has been used');
                     response.body.errors.should.have.property('password');
-                    response.body.errors.password.message.should.equal('Password minimum length must be 6')
+                    response.body.errors.password.message.should.equal('Password minimum length must be 6');
+                    response.body.errors.should.have.property('name');
+                    response.body.errors.name.message.should.equal('Name is required');
                     done();
                 });
         });
@@ -58,7 +64,8 @@ describe('/POST user/register', function() {
                 .post('/user/register')
                 .send({
                     email: 'a@a',
-                    password: ''
+                    password: '',
+                    name: ''
                 })
                 .then(response => {
                     response.should.have.status(500);
@@ -66,7 +73,9 @@ describe('/POST user/register', function() {
                     response.body.errors.should.have.property('email');
                     response.body.errors.email.message.should.equal('Invalid email format');
                     response.body.errors.should.have.property('password');
-                    response.body.errors.password.message.should.equal('Password is required')
+                    response.body.errors.password.message.should.equal('Password is required');
+                    response.body.errors.should.have.property('name');
+                    response.body.errors.name.message.should.equal('Name is required');
                     done();
                 });
         });
@@ -76,7 +85,8 @@ describe('/POST user/register', function() {
                 .post('/user/register')
                 .send({
                     email: '',
-                    password: ''
+                    password: '',
+                    name: ''
                 })
                 .then(response => {
                     response.should.have.status(500);
@@ -84,7 +94,9 @@ describe('/POST user/register', function() {
                     response.body.errors.should.have.property('email');
                     response.body.errors.email.message.should.equal('Email is required');
                     response.body.errors.should.have.property('password');
-                    response.body.errors.password.message.should.equal('Password is required')
+                    response.body.errors.password.message.should.equal('Password is required');
+                    response.body.errors.should.have.property('name');
+                    response.body.errors.name.message.should.equal('Name is required');
                     done();
                 });
         });
@@ -93,7 +105,7 @@ describe('/POST user/register', function() {
 
 describe('/POST user/login', function() {
     describe('success', function() {
-        it('should return a jwt token and status 200', function(done) {
+        it('should return an object of access_token and name and status 200', function(done) {
             chai
                 .request(app)
                 .post('/user/login')
@@ -103,7 +115,10 @@ describe('/POST user/login', function() {
                 })
                 .then(response => {
                     response.should.have.status(200);
-                    response.body.should.be.a('string');
+                    response.body.should.be.an('object');
+                    response.body.should.have.property('access_token');
+                    response.body.access_token.should.be.a('string');
+                    response.body.should.have.property('name');
                     done();
                 })
                 .catch(err => {

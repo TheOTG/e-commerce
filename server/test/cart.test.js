@@ -2,6 +2,7 @@ const chai = require('chai');
 const chaihttp = require('chai-http');
 const app = require('../app');
 const should = chai.should();
+const db = require('../helpers/dropCollection');
 
 chai.use(chaihttp);
 
@@ -14,6 +15,9 @@ let token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjVjOGY3YzQ3MTExNzA5N2
 let owner = '5c8f7c471117097a93eb15e4';
 
 describe('/POST cart', function() {
+    before('create product', function() {
+        db.dropCollection('cart');
+    });
     describe('success', function() {
         it('should create a cart and return an object and status 200', function(done) {
             chai
@@ -71,7 +75,7 @@ describe('/POST cart', function() {
 
 describe('/PUT cart/:id/addQuantity', function() {
     describe('success', function() {
-        it('should add a product to the cart and return the updated cart and status 200', function(done) {
+        it('should add a specific product quantity in the cart and return the updated cart and status 200', function(done) {
             chai
                 .request(app)
                 .put(`/cart/${cartId}/addQuantity`)
@@ -133,7 +137,7 @@ describe('/PUT cart/:id/addQuantity', function() {
 
 describe('/PUT cart/:id/subtractQuantity', function() {
     describe('success', function() {
-        it('should subtract a product from a cart and return the updated cart and status 200', function(done) {
+        it('should subtract a specific product quantity in the cart and return the updated cart and status 200', function(done) {
             chai
                 .request(app)
                 .put(`/cart/${cartId}/subtractQuantity`)
@@ -205,7 +209,6 @@ describe('/PUT cart/:id/addProduct', function() {
                     product: '5c8f38e7f0ece549dd1bd83e'
                 })
                 .then(response => {
-                    console.log(response.body)
                     response.should.have.status(200);
                     response.body.should.have.property('products');
                     response.body.products.length.should.equal(2);
