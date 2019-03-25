@@ -6,7 +6,7 @@
                  @search="searchProducts = filter($event)" 
                  @removeProduct="removeFromCart($event)" 
                  @addToCart="cart.push($event)" 
-                 @login="isLogin = !isLogin" 
+                 @login="login($event)" 
                  @getProduct="getProducts" 
                  :is-login="isLogin" :my-name="name" 
                  :my-cart="cart" :products="products" 
@@ -61,6 +61,10 @@ export default {
       return this.products.filter(product => {
         return product.name.search(new RegExp(search, 'i')) > -1
       })
+    },
+    login(name) {
+      this.isLogin = !this.isLogin;
+      this.name = name;
     }
   },
 };

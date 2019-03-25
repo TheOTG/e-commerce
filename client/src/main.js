@@ -6,7 +6,7 @@ import router from './router';
 
 Vue.use(VueSwal);
 
-axios.defaults.baseURL = 'http://localhost:3000';
+axios.defaults.baseURL = 'http://e-commerce-server.kennyanthonythe.xyz';
 
 Vue.prototype.$axios = axios;
 

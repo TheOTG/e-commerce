@@ -22,7 +22,7 @@
       <router-link class="hov noDecor rounded nav-link" to="/cart"><i class="fas fa-shopping-cart"></i> Cart</router-link>
       <div v-if="!isLogin" class="dropdown">
         <a href="#" class="hov noDecor rounded nav-link" data-toggle="dropdown">Login</a>
-        <Login @login="$emit('login')" />
+        <Login @login="$emit('login', $event)" />
       </div>
       <router-link v-if="!isLogin" class="hov noDecor rounded nav-link" to="/register">Register</router-link>
       <div v-if="isLogin" class="nav-item ml-2 mr-2">Hello, {{ myName }}!</div>

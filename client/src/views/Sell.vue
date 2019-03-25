@@ -87,6 +87,7 @@ export default {
         })
         .then(({ data }) => {
           this.$swal('Product registration success!', `Thank you for using our platform, ${this.myName}!`, 'success');
+          this.$emit('getProduct');
           this.$router.push('product');
         })
         .catch(err => {
