@@ -4,13 +4,11 @@ const productRouter = require('./routes/product');
 const cartRouter = require('./routes/cart');
 const userRouter = require('./routes/user');
 const mongoose = require('mongoose');
+const app = express();
 const cors = require('cors');
 
-const DB_NAME = process.env.MONGO_DATABASE;
-
-mongoose.connect(`mongodb://localhost/${DB_NAME}`, { useNewUrlParser: true });
-
-const app = express();
+// mongoose.connect(`mongodb://localhost/${DB_NAME}`, { useNewUrlParser: true });
+mongoose.connect(`mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PASSWORD}@${process.env.MONGO_DATABASE}?retryWrites=true`, { useNewUrlParser: true })
 
 app.use(cors());
 app.use(express.json());
