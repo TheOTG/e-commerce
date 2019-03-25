@@ -13,7 +13,7 @@
                 <div v-if="product.seller">Seller: {{ product.seller.name }}</div>
               </div>
               <div class="d-flex flex-row justify-content-end align-items-center float-right">
-                <a href="#" @click.prevent="product.quantity = 1 ? 1 : product.quantity--" style="text-decoration: none; color: black;"><i class="mr-2 far fa-minus-square"></i></a>
+                <a href="#" @click.prevent="if(product.quantity > 1) product.quantity--" style="text-decoration: none; color: black;"><i class="mr-2 far fa-minus-square"></i></a>
                 {{ product.quantity }}
                 <a href="#" @click.prevent="product.quantity++" style="text-decoration: none; color: black;"><i class="ml-2 far fa-plus-square"></i></a>
                 <div class="ml-3">
